@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRADE PILOT | CLASS DASHBOARD</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #00ff9f;
+            --secondary: #39ff14;
+            --warning: #ffea00;
+            --danger: #ff3333;
+            --bg: #020203;
+            --panel: rgba(20, 20, 25, 0.95);
+            --border: 1px solid rgba(0, 255, 159, 0.3);
+            --text: #cbd5e1;
+            --font-main: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding: 2rem;
+            background-image:
+                linear-gradient(rgba(0, 255, 159, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 159, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* SEARCH BAR STYLES */
+        .search-section {
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .search-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 1rem 1.5rem;
+            font-family: var(--font-main);
+            font-size: 1.1rem;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 4px;
+            outline: none;
+            box-shadow: 0 0 15px rgba(0, 255, 159, 0.1);
+            transition: 0.3s;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 25px rgba(0, 255, 159, 0.3);
+        }
+
+        .search-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 0 2rem;
+            font-family: var(--font-main);
+            font-weight: 900;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .search-btn:hover {
+            background: var(--secondary);
+            box-shadow: 0 0 20px var(--secondary);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-family: var(--font-main);
+            color: var(--primary);
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px rgba(0, 255, 159, 0.3);
+            margin-bottom: 0.5rem;
+        }
+
+        .student-meta {
+            text-align: right;
+        }
+
+        .student-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 1px;
+        }
+
+        .student-reg {
+            color: var(--secondary);
+            font-family: var(--font-main);
+            letter-spacing: 2px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow-x: auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            min-width: 900px;
+        }
+
+        th {
+            text-align: center;
+            color: var(--primary);
+            font-family: var(--font-main);
+            font-size: 0.85rem;
+            padding: 1rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+        }
+
+        th:first-child,
+        th:nth-child(2),
+        th:nth-child(3) {
+            text-align: left;
+        }
+
+        td {
+            padding: 1rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        td:first-child,
+        td:nth-child(2),
+        td:nth-child(3) {
+            text-align: left;
+        }
+
+        .mark-cell {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .target-cell {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-theory {
+            background: rgba(0, 243, 255, 0.1);
+            color: #00f3ff;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .badge-hybrid {
+            background: rgba(255, 234, 0, 0.1);
+            color: #ffea00;
+            border: 1px solid rgba(255, 234, 0, 0.3);
+        }
+
+        .badge-lab {
+            background: rgba(255, 51, 51, 0.1);
+            color: #ff3333;
+            border: 1px solid rgba(255, 51, 51, 0.3);
+        }
+
+        .val-impossible {
+            color: var(--danger);
+            opacity: 0.3;
+            font-size: 0.8em;
+        }
+
+        .val-hard {
+            color: var(--warning);
+        }
+
+        .val-easy {
+            color: var(--primary);
+        }
+
+        .legend {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.8;
+            flex-wrap: wrap;
+        }
+
+        .hybrid-link {
+            color: var(--warning);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-bottom: 1px dotted var(--warning);
+            transition: 0.3s;
+        }
+
+        .hybrid-link:hover {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #welcome-msg {
+            text-align: center;
+            margin-top: 4rem;
+            opacity: 0.6;
+            font-size: 1.2rem;
+        }
+
+        #error-msg {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--danger);
+            font-weight: 700;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .student-meta {
+                text-align: left;
+            }
+
+            th,
+            td {
+                padding: 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .search-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="search-section">
+            <input type="text" id="searchInput" class="search-input"
+                placeholder="Enter Last 2 Digits (e.g., 01, 33, 63)...">
+            <button class="search-btn" onclick="findStudent()">Analyze</button>
+        </div>
+        <div id="error-msg">ROLL NUMBER NOT FOUND</div>
+
+        <div id="welcome-msg">
+            SEARCH FOR A STUDENT TO GENERATE REPORT<br>
+            <span style="font-size:0.9rem; margin-top:10px; display:block;">(Full Batch Data Loaded: S.No 1 - 62)</span>
+        </div>
+
+        <div id="reportCard" class="hidden">
+            <header>
+                <div>
+                    <h1>GRADE PILOT</h1>
+                    <div style="color:var(--text); letter-spacing:3px; font-size:0.8rem;">// AUTOMATED TRANSCRIPT
+                        ANALYSIS //</div>
+                </div>
+                <div class="student-meta">
+                    <div class="student-name" id="dispName">STUDENT NAME</div>
+                    <div class="student-reg" id="dispReg">REGISTER NO</div>
+                    <div style="font-size:0.8rem; margin-top:4px;">B.E. EEE | Batch 2025 | Sem 1</div>
+                </div>
+            </header>
+
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h3 style="font-family:var(--font-main); color:var(--secondary);">GPA Prediction Strategy</h3>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Type</th>
+                            <th>CIA</th>
+                            <th>O (10)</th>
+                            <th>A+ (9)</th>
+                            <th>A (8)</th>
+                            <th>B+ (7)</th>
+                            <th>B (6)</th>
+                            <th>C (5)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradeBody">
+                        <!-- JS will populate this -->
+                    </tbody>
+                </table>
+
+                <div class="legend">
+                    <span>* Values shown are required marks in Theory Semester Exam (out of 100)</span>
+                    <span><span style="color:var(--danger)">■</span> N/A (Impossible)</span>
+                    <span><span style="color:var(--warning)">■</span> High Difficulty (>80)</span>
+                    <span><span style="color:var(--primary)">■</span> Achievable</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // COMPLETE DATABASE EXTRACTED FROM ALL IMAGES
+        // Format: [RegNo, Name, EN101, MA101, PH101, CH101, EE101, ME102, IT103, BS102, EE103]
+        const classData = [
+            // --- FROM IMAGE 1D86AA (S.No 1-15) ---
+            { reg: "710725105001", name: "AADITHYA A", marks: [27, 28, 26, 21, 29, 33, 39, 43, 55] },
+            { reg: "710725105002", name: "ABHISHEK P", marks: [27, 31, 28, 27, 29, 37, 41, 50, 55] },
+            { reg: "710725105003", name: "AFZAL S", marks: [28, 33, 28, 27, 28, 38, 40, 47, 50] },
+            { reg: "710725105004", name: "ANBU M", marks: [25, 25, 25, 24, 25, 36, 39, 45, 52] },
+            { reg: "710725105005", name: "ASWANTH G", marks: [27, 24, 24, 23, 25, 37, 39, 43, 49] },
+            { reg: "710725105006", name: "BALAKUMAR K", marks: [31, 38, 33, 32, 35, 38, 45, 53, 56] },
+            { reg: "710725105007", name: "BARATH S", marks: [29, 37, 31, 30, 32, 38, 48, 51, 54] },
+            { reg: "710725105008", name: "BOOJITHA M", marks: [31, 37, 32, 27, 31, 35, 43, 51, 54] },
+            { reg: "710725105009", name: "BOOMIKA S", marks: [21, 20, 24, 19, 20, 29, 38, 46, 50] },
+            { reg: "710725105010", name: "CHANDRU R", marks: [27, 32, 31, 28, 32, 36, 41, 52, 52] },
+            { reg: "710725105011", name: "DARUN D R", marks: [31, 37, 34, 33, 38, 39, 49, 55, 55] },
+            { reg: "710725105012", name: "DEEPAK DAKSHIN M", marks: [32, 32, 34, 29, 33, 38, 43, 50, 55] },
+            { reg: "710725105013", name: "DEVASH S", marks: [31, 28, 30, 27, 31, 37, 41, 52, 56] },
+            { reg: "710725105014", name: "DHAKSHAN G D", marks: [27, 24, 27, 23, 27, 34, 37, 41, 51] },
+            { reg: "710725105015", name: "DHARANIDHARAN D", marks: [28, 29, 31, 26, 26, 38, 44, 49, 55] },
+
+            // --- FROM IMAGE 1D86C1 (S.No 16-31) ---
+            { reg: "710725105017", name: "GRITHARA VEDA VIYASAN R B", marks: [34, 35, 36, 33, 36, 39, 46, 55, 57] },
+            { reg: "710725105018", name: "HARI PRASANTH R", marks: [24, 26, 24, 22, 24, 32, 38, 43, 53] },
+            { reg: "710725105019", name: "HARINI M", marks: [29, 33, 30, 27, 31, 36, 41, 47, 56] },
+            { reg: "710725105020", name: "HARINI S", marks: [32, 37, 31, 28, 32, 38, 45, 49, 55] },
+            { reg: "710725105021", name: "HASHINI S", marks: [31, 27, 29, 28, 30, 38, 40, 48, 54] },
+            { reg: "710725105022", name: "JANANI R S", marks: [29, 30, 28, 23, 29, 36, 41, 50, 54] },
+            { reg: "710725105023", name: "JEEVIKA M P", marks: [29, 23, 28, 25, 30, 31, 41, 47, 53] },
+            { reg: "710725105024", name: "KARTHIKEYAN K", marks: [23, 27, 24, 24, 27, 33, 36, 45, 49] },
+            { reg: "710725105025", name: "KARTHIKEYINI L", marks: [36, 39, 38, 35, 37, 39, 47, 56, 56] },
+            { reg: "710725105026", name: "KEERTHIGAVARSHINI S D", marks: [36, 33, 34, 33, 33, 38, 44, 55, 53] },
+            { reg: "710725105027", name: "KEWIN M", marks: [24, 27, 24, 22, 25, 30, 38, 45, 52] },
+            { reg: "710725105028", name: "KIFAYATHULLAH I", marks: [28, 34, 28, 28, 33, 37, 46, 52, 54] },
+            { reg: "710725105029", name: "KRISHNAPRITHVIRAJAN P", marks: [27, 30, 24, 26, 29, 32, 40, 46, 51] },
+            { reg: "710725105030", name: "MADHUPRIYA V S", marks: [33, 29, 31, 28, 34, 35, 43, 50, 52] },
+            { reg: "710725105031", name: "MANOJ S", marks: [25, 17, 24, 22, 21, 29, 35, 46, 52] },
+            { reg: "710725105032", name: "MOHAN RAJ N", marks: [26, 37, 29, 27, 31, 38, 45, 55, 55] },
+
+            // --- FROM WHATSAPP IMAGE (1) (S.No 32-48) ---
+            { reg: "710725105033", name: "MOHANAPRIYA C", marks: [28, 28, 26, 24, 28, 36, 42, 46, 54] },
+            { reg: "710725105034", name: "MOHANAVEL P", marks: [30, 38, 37, 35, 35, 38, 46, 55, 56] },
+            { reg: "710725105035", name: "NAVANEELAMBARINAYAKI V", marks: [27, 25, 28, 23, 26, 34, 39, 44, 55] },
+            { reg: "710725105036", name: "NAVANEETHA KRISHNAN U", marks: [26, 30, 27, 23, 27, 29, 37, 44, 51] },
+            { reg: "710725105037", name: "NITHIN PRANAV R", marks: [28, 30, 26, 25, 28, 35, 40, 47, 53] },
+            { reg: "710725105038", name: "P LOGESH", marks: [29, 29, 32, 26, 36, 35, 42, 47, 55] },
+            { reg: "710725105039", name: "PAVITHIRAN U V", marks: [25, 35, 30, 26, 29, 32, 42, 50, 53] },
+            { reg: "710725105040", name: "PRAGADEESH V S", marks: [28, 32, 32, 28, 31, 36, 44, 51, 56] },
+            { reg: "710725105041", name: "PRAKALYA N", marks: [29, 31, 28, 22, 29, 35, 41, 46, 54] },
+            { reg: "710725105042", name: "PRANEETH K P", marks: [31, 38, 27, 22, 30, 33, 45, 47, 53] },
+            { reg: "710725105043", name: "PRANESH R", marks: [22, 16, 18, 15, 17, 17, 25, 42, 29] },
+            { reg: "710725105044", name: "PRATHEESH S", marks: [27, 31, 26, 25, 31, 37, 40, 48, 56] },
+            { reg: "710725105045", name: "PRATHIP", marks: [28, 26, 29, 29, 30, 33, 39, 50, 52] },
+            { reg: "710725105046", name: "RAGUL K", marks: [31, 32, 34, 27, 32, 37, 41, 49, 58] },
+            { reg: "710725105047", name: "RAJA KISHOR S", marks: [27, 24, 24, 24, 26, 34, 38, 46, 53] },
+            { reg: "710725105048", name: "SABARNA K", marks: [32, 26, 31, 28, 30, 37, 41, 50, 56] },
+            { reg: "710725105049", name: "SAISUDAN S V", marks: [26, 31, 27, 23, 29, 35, 38, 45, 54] },
+
+            // --- FROM WHATSAPP IMAGE (2) (S.No 49-62) ---
+            { reg: "710725105050", name: "SANJAI RAAM S", marks: [28, 29, 26, 26, 32, 37, 40, 48, 55] },
+            { reg: "710725105051", name: "SANJAY G", marks: [31, 38, 34, 30, 34, 37, 45, 53, 56] },
+            { reg: "710725105052", name: "SATHYA S", marks: [27, 31, 30, 28, 28, 38, 43, 50, 55] },
+            { reg: "710725105053", name: "SHEEBA MIRACLIN P", marks: [33, 32, 33, 31, 33, 35, 40, 47, 55] },
+            { reg: "710725105054", name: "SIDDHARTH R", marks: [29, 22, 25, 21, 23, 29, 36, 44, 52] },
+            { reg: "710725105055", name: "SIDDHES C M", marks: [30, 32, 31, 26, 34, 38, 45, 51, 55] },
+            { reg: "710725105056", name: "SIVARANJAN K", marks: [25, 27, 26, 25, 28, 36, 41, 49, 54] },
+            { reg: "710725105057", name: "SRIKARTHI R", marks: [28, 29, 32, 27, 33, 34, 46, 47, 55] },
+            { reg: "710725105058", name: "SUBHASHINI A", marks: [31, 29, 31, 28, 30, 38, 42, 49, 56] },
+            { reg: "710725105059", name: "SUDHARSHINI N", marks: [31, 25, 29, 24, 30, 29, 41, 50, 55] },
+            { reg: "710725105060", name: "SWETHA K", marks: [32, 34, 32, 26, 31, 38, 45, 47, 55] },
+            { reg: "710725105061", name: "TAMIZHARASAN S", marks: [27, 21, 26, 26, 27, 27, 40, 43, 51] },
+            { reg: "710725105062", name: "VETHAVIYASAN B", marks: [27, 35, 30, 29, 34, 37, 40, 53, 54] },
+            { reg: "710725105063", name: "VIJI T", marks: [28, 31, 28, 26, 27, 38, 39, 52, 56] }
+        ];
+
+        const subjects = [
+            { code: '22UEN101', max: 40 },
+            { code: '22UMA101', max: 40 },
+            { code: '22UPH101', max: 40 },
+            { code: '22UCH101', max: 40 },
+            { code: '22UEE101', max: 40 },
+            { code: '22UME102', max: 40 },
+            { code: '22UIT103', max: 50 }, // Hybrid
+            { code: '22UBS102', max: 60 }, // Lab
+            { code: '22UEE103', max: 60 }  // Lab
+        ];
+
+        function findStudent() {
+            const input = document.getElementById('searchInput').value.trim();
+            const errorMsg = document.getElementById('error-msg');
+            const welcomeMsg = document.getElementById('welcome-msg');
+            const reportCard = document.getElementById('reportCard');
+
+            // Updated Search Logic: Match last 2 digits
+            const student = classData.find(s => s.reg.slice(-2) === input);
+
+            if (student) {
+                document.getElementById('dispName').innerText = student.name;
+                document.getElementById('dispReg').innerText = student.reg;
+                generateTable(student.marks);
+
+                welcomeMsg.classList.add('hidden');
+                errorMsg.style.display = 'none';
+                reportCard.classList.remove('hidden');
+            } else {
+                reportCard.classList.add('hidden');
+                welcomeMsg.classList.add('hidden');
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        const gradeTargets = [
+            { target: 91 }, // O
+            { target: 81 }, // A+
+            { target: 71 }, // A
+            { target: 61 }, // B+
+            { target: 56 }, // B
+            { target: 50 }  // C
+        ];
+
+        function calculateTarget(targetTotal, ciaScored, maxMarks) {
+            let needed = 0;
+
+            if (maxMarks === 40) {
+                needed = Math.ceil((targetTotal - ciaScored) / 0.6);
+            } else if (maxMarks === 60) {
+                needed = Math.ceil((targetTotal - ciaScored) / 0.4);
+            }
+            needed = Math.max(needed, 45);
+            return needed;
+        }
+
+        function formatCell(val) {
+            if (val > 100) return `<span class="val-impossible">N/A</span>`;
+            if (val > 80) return `<span class="val-hard">${val}</span>`;
+            return `<span class="val-easy">${val}</span>`;
+        }
+
+        function getType(max) {
+            if (max === 40) return { label: 'THEORY', class: 'badge-theory' };
+            if (max === 50) return { label: 'HYBRID', class: 'badge-hybrid' };
+            if (max === 60) return { label: 'LAB', class: 'badge-lab' };
+        }
+
+        function generateTable(marks) {
+            const tbody = document.getElementById('gradeBody');
+            tbody.innerHTML = '';
+
+            subjects.forEach((sub, index) => {
+                const type = getType(sub.max);
+                const scored = marks[index];
+                let rowContent = '';
+
+                if (sub.max === 50) {
+                    rowContent = `
+          <td style="color:#fff; font-weight:700;">${sub.code}</td>
+          <td><span class="badge ${type.class}">${type.label}</span></td>
+          <td class="mark-cell">${scored} <span style="font-size:0.7em; color:var(--text); opacity:0.5">/${sub.max}</span></td>
+          <td colspan="6" style="text-align:center; color:var(--text); opacity:0.8; font-size:0.9rem; letter-spacing:1px;">
+             Depends on Sem Practical Score: 
+             <a href="https://thecircuittheory.github.io/academic-calculator/" target="_blank" class="hybrid-link">https://thecircuittheory.github.io/academic-calculator/</a>
+          </td>
+        `;
+                } else {
+                    let cellsHtml = '';
+                    gradeTargets.forEach(g => {
+                        const req = calculateTarget(g.target, scored, sub.max);
+                        cellsHtml += `<td class="target-cell">${formatCell(req)}</td>`;
+                    });
+
+                    rowContent = `
+          <td style="color:#fff; font-weight:700;">${sub.code}</td>
+          <td><span class="badge ${type.class}">${type.label}</span></td>
+          <td class="mark-cell">${scored} <span style="font-size:0.7em; color:var(--text); opacity:0.5">/${sub.max}</span></td>
+          ${cellsHtml}
+        `;
+                }
+
+                tbody.innerHTML += `<tr>${rowContent}</tr>`;
+            });
+        }
+
+        // Allow 'Enter' key to search
+        document.getElementById('searchInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                findStudent();
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
